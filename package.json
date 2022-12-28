@@ -5,18 +5,19 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node index.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@supabase/supabase-js": "^2.2.2",
-    "axios": "^1.2.1",
     "chatgpt": "^3.3.3",
     "dotenv": "^16.0.3",
     "qrcode-terminal": "^0.12.0",
-    "twilio": "^2.5.2",
     "whatsapp-web.js": "^1.18.4"
+  },
+  "engines": {
+    "npm": ">=8.0.0 <9.0.0",
+    "node": ">=18.0.0 <19.0.0"
   }
 }
