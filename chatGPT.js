@@ -8,6 +8,7 @@ export class ChatGPTAccounts {
    */
   constructor(value, next) {
     this.value = value;
+    this.available = true;
     this.lastTime = Date.now();
     this.next = next;
   }
@@ -15,11 +16,12 @@ export class ChatGPTAccounts {
   /**
    *
    * @param {string} message
+   * @param {string | undefined} conversationId
    *
-   * @returns {Promise<{response: string, error: boolean}>} bot response
+   * @returns {Promise<{response: string, error: boolean, conversationId: string}>} bot response
    */
-  async getBotResponse(message, now = Date.now()) {
-    if (now - this.lastTime < 3333) {
+  async getBotResponse(message, conversationId, now = Date.now()) {
+    if (now - this.lastTime < 3333 && this.available) {
       if (!this.next) {
         return {
           response:
@@ -27,18 +29,24 @@ export class ChatGPTAccounts {
           error: true,
         };
       }
-      return this.next.getBotResponse(message, now);
+      return this.next.getBotResponse(message, conversationId, now);
     }
-    this.lastTime = now;
-    let res = ".";
+    this.available = false;
+    let res = "";
     let error = false;
     try {
-      res = (await this.value.sendMessage(message)).response;
+      const chatResponse = await this.value.sendMessage(message, {
+        conversationId,
+      });
+      res = chatResponse.response;
+      conversationId = res.conversationId;
+      this.available = true;
+      this.lastTime = Date.now();
     } catch (e) {
       res = e.message;
       error = true;
     } finally {
-      return { response: res, error };
+      return { response: res, error, conversationId };
     }
   }
 

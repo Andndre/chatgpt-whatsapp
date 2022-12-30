@@ -37,22 +37,19 @@ async function run() {
   const room = new Map();
 
   client.on("message_create", async (msg) => {
-    const id = (await msg.getChat()).id.user;
-
+    const chat = await msg.getChat();
+    const id = chat.id.user;
     try {
       console.log({ id });
       if (msg.fromMe) {
         if (!msg.body.startsWith(prefixForMyself)) return;
-        (await msg.getChat()).sendMessage("Sedang memproses..");
+        chat.sendStateTyping();
         const chatGPTResponse = await chatgpt.getBotResponse(
-          msg.body.substring(8)
+          msg.body.substring(prefixForMyself.length)
         );
         if (chatGPTResponse.error) {
-          (await msg.getChat()).sendMessage(
-            "Oopps... sepertinya terjadi kesalahan"
-          );
+          chat.sendMessage("Oopps... sepertinya terjadi kesalahan");
         }
-
         console.log({
           pesan: msg.body,
           chatgpt: chatGPTResponse.response,
@@ -61,22 +58,31 @@ async function run() {
         return;
       }
       if (msg.body.toLowerCase() === commandLogin) {
-        room.set(id, true);
+        const {
+          conversationId,
+          error: _,
+          response,
+        } = await chatgpt.getBotResponse("respon menggunakan bahasa indonesia");
+        room.set(id, conversationId);
         msg.reply(
-          "Fitur chatgpt sudah aktif. Pesan selanjutnya akan direspon oleh chatgpt"
+          "Fitur chatgpt sudah aktif. Pesan selanjutnya akan direspon oleh chatgpt\n" +
+            "\n" +
+            response
         );
       } else if (msg.body.toLowerCase() === commandLogout) {
-        room.set(id, false);
+        room.set(id, undefined);
         msg.reply("Fitur chatgpt sudah dimatikan. Kembali ke mode normal");
       } else {
         if (!room.has(id)) return;
-        if (!room.get(id)) return;
-        (await msg.getChat()).sendMessage("Sedang memproses..");
-        const chatGPTResponse = await chatgpt.getBotResponse(msg.body);
+        const conversationId = room.get(id);
+        if (!conversationId) return;
+        chat.sendStateTyping();
+        const chatGPTResponse = await chatgpt.getBotResponse(
+          msg.body,
+          conversationId
+        );
         if (chatGPTResponse.error) {
-          (await msg.getChat()).sendMessage(
-            "Oopps... sepertinya terjadi kesalahan"
-          );
+          chat.sendMessage("Oopps... sepertinya terjadi kesalahan");
         }
         console.log({
           pesan: msg.body,
