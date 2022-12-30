@@ -11,6 +11,9 @@ const client = new Client();
 const commandLogin = "/chatgpt login";
 const commandLogout = "/chatgpt logout";
 
+/** @type {string | undefined} */
+let selfConvId = undefined;
+
 const prefixForMyself = "/chatgpt";
 
 const chatgpt = new ChatGPTAccounts(
@@ -45,8 +48,10 @@ async function run() {
         if (!msg.body.startsWith(prefixForMyself)) return;
         chat.sendStateTyping();
         const chatGPTResponse = await chatgpt.getBotResponse(
-          msg.body.substring(prefixForMyself.length)
+          msg.body.substring(prefixForMyself.length),
+          { conversationId: selfConvId }
         );
+        selfConvId = chatGPTResponse.conversationId;
         if (chatGPTResponse.error) {
           chat.sendMessage("Oopps... sepertinya terjadi kesalahan");
         }
