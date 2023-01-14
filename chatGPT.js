@@ -8,45 +8,42 @@ export class ChatGPTAccounts {
    */
   constructor(value, next) {
     this.value = value;
-    this.available = true;
     this.lastTime = Date.now();
+    this.busy = false;
     this.next = next;
   }
 
   /**
    *
    * @param {string} message
-   * @param {string | undefined} conversationId
    *
-   * @returns {Promise<{response: string, error: boolean, conversationId: string}>} bot response
+   * @returns {Promise<{response: string, error: boolean}>} bot response
    */
-  async getBotResponse(message, conversationId, now = Date.now()) {
-    if (now - this.lastTime < 3333 && this.available) {
+  async getBotResponse(message, now = Date.now()) {
+    if (this.busy || now - this.lastTime < 3333) {
       if (!this.next) {
         return {
           response:
-            "Fitur ini terlalu sering digunakan, coba beberapa detik lagi",
+            "This feature has been used too many times, please try again in a few seconds.",
           error: true,
         };
       }
-      return this.next.getBotResponse(message, conversationId, now);
+      return this.next.getBotResponse(message, now);
     }
-    this.available = false;
     let res = "";
     let error = false;
     try {
-      const chatResponse = await this.value.sendMessage(message, {
-        conversationId,
-      });
-      res = chatResponse.response;
-      conversationId = res.conversationId;
-      this.available = true;
       this.lastTime = Date.now();
+      this.busy = true;
+      const chatResponse = await this.value.sendMessage(message);
+      res = chatResponse.response;
     } catch (e) {
       res = e.message;
       error = true;
     } finally {
-      return { response: res, error, conversationId };
+      this.lastTime = Date.now();
+      this.busy = false;
+      return { response: res, error };
     }
   }
 
@@ -68,8 +65,10 @@ export class ChatGPTAccounts {
     await this.value.initSession();
     if (!this.next) return count;
     await new Promise((resolve) => {
-      console.log("Mencoba login akun ke " + (count + 1) + " dalam 5 detik");
-      setTimeout(() => resolve(), 5000);
+      console.log(
+        "Trying to login to " + (count + 1) + "th account in 3 seconds"
+      );
+      setTimeout(() => resolve(), 3000);
     });
     return this.next.init(count + 1);
   }
