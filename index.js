@@ -70,9 +70,7 @@ async function run() {
       if (msg.body.toLowerCase() === commandActivate) {
         room.set(id, true);
         msg.reply(
-          "The chatgpt feature has been activated successfully. Further messages will be responded to by chatgpt\n" +
-            "\n" +
-            response
+          "The chatgpt feature has been activated successfully. Further messages will be responded to by chatgpt"
         );
       } else if (msg.body.toLowerCase() === commandDeactivate) {
         room.set(id, false);
