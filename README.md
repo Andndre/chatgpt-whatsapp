@@ -1,6 +1,8 @@
 # ChatGPT-Whatsapp
 
-A WhatsApp bot that can respond to messages with Unofficial ChatGPT API
+A WhatsApp bot that can respond to messages with the ChatGPT API 🔥
+
+Powered by [this repo](https://github.com/transitive-bullshit/chatgpt-api)
 
 > **Note**
 > This Bot will be migrated to use the Official ChatGPT API as soon as it released
@@ -9,58 +11,28 @@ A WhatsApp bot that can respond to messages with Unofficial ChatGPT API
 
 * Clone this repository
 * Run `npm install`
-* Change `.env.example` to `.env` and add your chatGPT account information (email and password)
+* Change `.env.example` to `.env` and add your open AI API key
 	```env
-	CHAT_GPT_EMAIL=
-	CHAT_GPT_PASSWORD=
+	CHAT_GPT_API_KEY=
 	```
-* Add multiple account: *(Optional)*
 
-	*index.js*:
-	```js
-	...
-	const chatgpt = new ChatGPTAccounts(
-		new ChatGPTAPIBrowser({
-			email: process.env.CHAT_GPT_EMAIL,
-			password: process.env.CHAT_GPT_PASSWORD,
-		})
-	);
+> According to [this](https://github.com/transitive-bullshit/chatgpt-api#:~:text=IP%20issues%20or-,rate%20limiting,-.), there is no need for us to worry about the API rate limit anymore
 
-	// This allows you to send more messages without 
-	// getting 429 / too many request Error:
-
-	chatgpt.addAccount(new ChatGPTAPIBrowser({
-		email: process.env.CHAT_GPT_EMAIL_2, // add this to your .env too
-		password: process.env.CHAT_GPT_PASSWORD_2
-	}))
-	...
-	```
 ## How to Use the Bot
 * To activate the bot for current chat room / group (Only for other WhatsApp Account)
 	```
-	/chatgpt true
+	/chatgpt on
 	```
 * To disable
 	```
-	/chatgpt false
+	/chatgpt off
 	```
 * For WhatsApp Account that running the ChatGpt Bot, you can prefix `/chatgpt` before your message
 	```
 	/chatgpt 1 + 1 equals what?
 	```
-* You can change the `prefix` / `command` in the `index.js` file
-	```js
-	...
-	const commandActivate = "your own activate command";
-	const commandDeactivate = "your own deactivate command";
-
-	const prefixForMyself = "your own prefix for yourself";
-	...
-	```
 
 ## Known Issues
-
-* The bot cannot remember previous conversation (for now)
 
 * You must keep the terminal window to stay focused for the bot to respond to messages
 
