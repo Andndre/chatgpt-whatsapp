@@ -25,6 +25,7 @@ export async function handleMessage(message: WAWebJS.Message) {
   if (!room) {
     return;
   }
+  chat.sendStateTyping();
   const reply = await api.sendMessage(message.body, {
     conversationId: room.convId,
     parentMessageId: room.lastMsgId,
@@ -37,7 +38,9 @@ export async function handleMessage(message: WAWebJS.Message) {
 }
 
 async function commandChatGPT(message: WAWebJS.Message, args: string[]) {
+  const chat = await message.getChat();
   if (message.fromMe) {
+    chat.sendStateTyping();
     const reply = await api.sendMessage(args.join(" "), {
       conversationId: myConvId,
       parentMessageId: myParentMsgId,
@@ -47,8 +50,8 @@ async function commandChatGPT(message: WAWebJS.Message, args: string[]) {
     message.reply("🤖: " + reply.text);
     return;
   }
-  const chat = await message.getChat();
   if (args[0] === "on") {
+    chat.sendStateTyping();
     const reply = await api.sendMessage(
       "hello, my name is " + chat.name,
     );
@@ -62,6 +65,7 @@ async function commandChatGPT(message: WAWebJS.Message, args: string[]) {
         reply.text,
     );
   } else if (args[0] === "off") {
+    chat.sendStateTyping();
     message.reply("🤖: Returning to normal mode...");
     rooms.delete(chat.id.user);
   }
