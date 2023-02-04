@@ -15,6 +15,7 @@ Powered by [this repo](https://github.com/transitive-bullshit/chatgpt-api)
 	```env
 	CHAT_GPT_API_KEY=
 	```
+* Run bot: use `npm run start`
 
 > According to [this](https://github.com/transitive-bullshit/chatgpt-api#:~:text=IP%20issues%20or-,rate%20limiting,-.), there is no need for us to worry about the API rate limit anymore
 
