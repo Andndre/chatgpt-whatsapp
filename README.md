@@ -4,9 +4,6 @@ A WhatsApp bot that can respond to messages with the ChatGPT API 🔥
 
 Powered by [this repo](https://github.com/transitive-bullshit/chatgpt-api)
 
-> **Note**
-> This Bot will be migrated to use the Official ChatGPT API as soon as it released
-
 ## Getting Started
 
 * Clone this repository
