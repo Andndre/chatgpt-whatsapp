@@ -12,25 +12,21 @@ export const api = new ChatGPTAPI({
 
 const client = new Client({});
 
-async function run() {
-  client.on("qr", (qr) => {
-    // Generate and scan this code with your phone
-    qrcode.generate(qr, { small: true });
-  });
+client.on("qr", (qr) => {
+  // Generate and scan this code with your phone
+  qrcode.generate(qr, { small: true });
+});
 
-  client.on("ready", () => {
-    console.log("Client is ready!");
-  });
+client.on("ready", () => {
+  console.log("Client is ready!");
+});
 
-  client.on("message_create", async (msg) => {
-    try {
-      await handleMessage(msg);
-    } catch (e: any) {
-      msg.reply(e.message);
-    }
-  });
+client.on("message_create", async (msg) => {
+  try {
+    await handleMessage(msg);
+  } catch (e: any) {
+    msg.reply(e.message);
+  }
+});
 
-  client.initialize();
-}
-
-run();
+client.initialize();
