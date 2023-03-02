@@ -2,12 +2,10 @@ import { default as WAWebJS } from "whatsapp-web.js";
 import { api } from "./index.js";
 
 type Room = {
-  convId: string;
-  lastMsgId: string;
+  parentMessageId: string;
 };
 
-let myConvId: string | undefined = undefined;
-let myParentMsgId: string | undefined = undefined;
+let myParentMessageId: string | undefined = undefined;
 
 const rooms: Map<string, Room> = new Map();
 
@@ -27,13 +25,11 @@ export async function handleMessage(message: WAWebJS.Message) {
   }
   chat.sendStateTyping();
   const reply = await api.sendMessage(message.body, {
-    conversationId: room.convId,
-    parentMessageId: room.lastMsgId,
+    parentMessageId: room.parentMessageId,
   });
   message.reply("🤖: " + reply.text);
   rooms.set(chat.id.user, {
-    convId: reply.conversationId!,
-    lastMsgId: reply.id,
+    parentMessageId: reply.id,
   });
 }
 
@@ -42,11 +38,9 @@ async function commandChatGPT(message: WAWebJS.Message, args: string[]) {
   if (message.fromMe) {
     chat.sendStateTyping();
     const reply = await api.sendMessage(args.join(" "), {
-      conversationId: myConvId,
-      parentMessageId: myParentMsgId,
+      parentMessageId: myParentMessageId,
     });
-    myConvId = reply.conversationId;
-    myParentMsgId = reply.id;
+    myParentMessageId = reply.id;
     message.reply("🤖: " + reply.text);
     return;
   }
@@ -57,8 +51,7 @@ async function commandChatGPT(message: WAWebJS.Message, args: string[]) {
     );
 
     rooms.set(chat.id.user, {
-      convId: reply.conversationId!,
-      lastMsgId: reply.id,
+      parentMessageId: reply.id,
     });
     message.reply(
       "🤖: ChatGPT will be responded to your messages from now on...\n🤖: " +
