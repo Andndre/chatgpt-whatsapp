@@ -14,8 +14,6 @@ Powered by [this repo](https://github.com/transitive-bullshit/chatgpt-api)
 	```
 * Run bot: use `npm run start`
 
-> According to [this](https://github.com/transitive-bullshit/chatgpt-api#:~:text=IP%20issues%20or-,rate%20limiting,-.), there is no need for us to worry about the API rate limit anymore
-
 ## How to Use the Bot
 * To activate the bot for current chat room / group (Only for other WhatsApp Account)
 	```
