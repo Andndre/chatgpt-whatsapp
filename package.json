@@ -19,6 +19,6 @@
   "devDependencies": {
     "@types/node-fetch": "^2.6.4",
     "@types/qrcode-terminal": "^0.12.0",
-    "typescript": "^5.1.6"
+    "typescript": "^5.2.2"
   }
 }
